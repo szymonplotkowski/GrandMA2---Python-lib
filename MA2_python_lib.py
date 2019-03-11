@@ -6,16 +6,286 @@
 #--                                                                  --
 #--     Author: Szymon Plotkowski                                    --
 #--     Company: Green Beam Design                                   --
-#--     Email: splotkowski@gmail.com                                 --
+#--     Email: szymonplotkowski@gmail.com                            --
 #--     Site: www.gbd.com.pl                                         --
 #--                                                                  --
 #--                                                                  --
 #----------------------------------------------------------------------
 #----------------------------------------------------------------------
 
+#=======================================================================================================
+#========================LAYOUTFILE CLASS===============================================================
+#=======================================================================================================
+
+"""Create a object that help to write xml MA2 layout file"""
+
+class MA2layout:
+
+    #===================================================================================================
+
+    """- __init__  - INPUT: ( filename (string), showfile (string) ) ; EFFECT: Initialize MA2layout object and generate file with proper MA2 Layout XML syntax header"""
 
 
-#MACROFILE CLASS========================================================================================
+    def __init__ (self, filename='default_layout_name.xml', showfile='Created with MA2MBL4P'):
+        self.__filename = filename
+        self.__showfile = showfile
+        with open(self.__filename, "w+") as __layout:
+            __layout.write('<?xml version="1.0" encoding="utf-8"?>\n')
+            __layout.write(
+                '<MA xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.malighting.de/grandma2/xml/MA" xsi:schemaLocation="http://schemas.malighting.de/grandma2/xml/MA http://schemas.malighting.de/grandma2/xml/3.4.0/MA.xsd" major_vers="3" minor_vers="4" stream_vers="0">\n')
+            __layout.write('\t<Info datetime="2018-01-20T19:30:29" showfile="' +self.__showfile+ '" />\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_start (self, lay_no=1, lay_name='default_layout_name'):
+        self.__lay_no = lay_no
+        self.__lay_name = lay_name
+        with open(self.__filename ,"w+") as __layout:
+              __layout.write ('\t<Group index=";' +__lay_no+ '" name="' +__lay_name+ '">\n')
+              return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_fix_declaration_start (self):
+        with open(self.__filename, "w+") as __layout:
+            __layout.write('\t\t<Subfixtures>\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_fixture_declaration_line (self, fixid='1', instance='0'):
+
+        self.__fixid = fixid
+        self.__instance = instance
+
+        with open(self.__filename, "w+") as __layout:
+            if self.__instance == 0:
+                __layout.write('\t\t\t<Subfixture fix_id="' + self.__fixid + '"/>\n')
+            else:
+                __layout.write('\t\t\t<Subfixture fix_id="' + self.__fixid + '" sub_index="' + self.__instance + '"/>\n')
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_fixtures_declaration_close(self):
+        with open(self.__filename, "w+") as __layout:
+            __layout.write('\t\t</Subfixtures>\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_data(self, lay_nr='1', visible='true', bckgrnd='000000', grid_h='1', grid_w='1', snap_h='0.5', snap_w='0.5', gauge='"Filled &amp; Symbol"', vmode='"DMX Layer"' ):
+
+        self.__lay_nr = lay_nr
+        self.__visible = visible
+        self.__bckgrnd = bckgrnd
+        self.__grid_h = grid_h
+        self.__grid_w = grid_w
+        self.__snap_h = snap_h
+        self.__snap_w = snap_w
+        self.__gauge = gauge
+        self.__vmode = vmode
+
+        with open(self.__filename ,"w+") as __layout:
+            __layout.write ('\t\t<LayoutData index="'+self.__lay_nr+'" marker_visible="'+self.__visible+'" background_color="'+self.__bckgrnd+'" visible_grid_h="'+self.__grid_h+'" visible_grid_w="'+self.__grid_w+'" snap_grid_h="'+self.__snap_h+'" snap_grid_w="'+self.__snap_w+'" default_gauge="'+self.__gauge+'" subfixture_view_mode="'+self.__vmode+'">\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_fixture_obj_start(self):
+        with open(self.__filename, "w+") as __layout:
+            __layout.write('\t\t\t<SubFixtures>\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_fixture_obj_line (self, fixid='1', center_x='1', center_y='1', instance='0', size_h='1', size_w='1', bckgrnd='00000000', icon='None', sh_id='1', sh_type='1', fn_type='Spot', select_gr='1'):
+
+        self.__fixid = fixid
+        self.__center_x = center_x
+        self.__center_y = center_y
+        self.__instance = instance
+        self.__size_h = size_h
+        self.__size_w = size_w
+        self.__bckgrnd = bckgrnd
+        self.__icon = icon
+        self.__sh_id = sh_id
+        self.__sh_type = sh_type
+        self.__fn_type = fn_type
+        self.__select_gr = select_gr
+
+        with open(self.__filename, "w+") as __layout:
+            if self.__instance == '0':
+                __layout.write('\t\t\t\t<LayoutSubFix center_x="' + self.__center_x + '" center_y="' + self.__center_y + '" size_h="' + self.__size_h + '" size_w="' + self.__size_w + '" background_color="' + self.__bckgrnd + '" icon="' + self.__icon + '" show_id="' + self.__sh_id + '" show_type="' + self.__sh_type + '" function_type="' + self.__n_type + '" select_group="' + self.__select_gr + '">\n')
+                __layout.write('\t\t\t\t\t<image />\n')
+                __layout.write('\t\t\t\t\t<Subfixture fix_id="' + self.__fixid + '" />\n')
+                __layout.write('\t\t\t\t</LayoutSubFix>\n\n')
+            else:
+                __layout.write('\t\t\t\t<LayoutSubFix center_x="' + self.__center_x + '" center_y="' + self.__center_y + '" size_h="' + self.__size_h + '" size_w="' + self.__size_w + '" background_color="' + self.__bckgrnd + '" icon="' + self.__icon + '" show_id="' + self.__sh_id + '" show_type="' + self.__sh_type + '" function_type="' + self.__fn_type + '" select_group="' + self.__select_gr + '">\n')
+                __layout.write('\t\t\t\t\t<image />\n')
+                __layout.write('\t\t\t\t\t<Subfixture fix_id="' + self.__fixid + '" sub_index="' + self.__instance + '" />\n')
+                __layout.write('\t\t\t\t</LayoutSubFix>\n\n')
+                return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_fixture_obj_close(self):
+        with open(self.__filename, "w+") as __layout:
+            __layout.write('\t\t\t</SubFixtures>\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+
+    def layout_objects(self, obj_name, obj_type, obj_nr, center_x, center_y, size_h='1', size_w='1', font='Small', bckgrnd='3c3c3c', border='5a5a5a', icon='None', txt='', sh_id='1', sh_name='1', sh_type='1', fn_type='Pool icon', select_gr='1'):
+
+        self.__obj_name = obj_name
+        self.__obj_type = obj_type
+        self.__obj_nr = obj_nr
+        self.__center_x = center_x
+        self.__center_y = center_y
+        self.__size_h = size_h
+        self.__size_w = size_w
+        self.__font = font
+        self.__bckgrnd = bckgrnd
+        self.__border = border
+        self.__icon = icon
+        self.__txt = txt
+        self.__sh_id = sh_id
+        self.__sh_name = sh_name
+        self.__sh_type = sh_type
+        self.__fn_type = fn_type
+        self.__select_gr = select_gr
+
+        with open(self.__filename, "w+") as __layout:
+            __layout.write('\t\t\t\t<LayoutCObject font_size="' + self.__font + '" center_x="' + self.__center_x + '" center_y="' + self.__center_y + '" size_h="' + self.__size_h + '" size_w="' + self.__size_w + '" background_color="' + self.__bckgrnd + '" border_color="' + self.__border + '" icon="' + self.__icon + '" text="' + self.__txt + '" show_id="' + self.__sh_id + '" show_name="' + self.__sh_name + '" show_type="' + self.__sh_type + '" function_type="' + self.__f_type + '" select_group="' + self.__select_gr + '">\n')
+            __layout.write('\t\t\t\t\t<image />\n')
+            __layout.write('\t\t\t\t\t<CObject name="' + self.__obj_name + '">\n')
+
+            if self.__obj_type == 'timecode_slot':
+                __layout.write('\t\t\t\t\t\t<No>3</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>6</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'image':
+                __layout.write('\t\t\t\t\t\t<No>8</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'macro':
+                __layout.write('\t\t\t\t\t\t<No>13</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>1</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'plugin':
+                __layout.write('\t\t\t\t\t\t<No>15</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'preset':
+                self.__obj = self.__obj_nr.split('.', 1)
+                __layout.write('\t\t\t\t\t\t<No>17</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>1</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj[1] + '</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj[2] + '</No>\n')
+
+            elif self.__obj_type == 'world':
+                __layout.write('\t\t\t\t\t\t<No>18</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'filter':
+                __layout.write('\t\t\t\t\t\t<No>19</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'group':
+                __layout.write('\t\t\t\t\t\t<No>22</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>1</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'form':
+                __layout.write('\t\t\t\t\t\t<No>23</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'fx':
+                __layout.write('\t\t\t\t\t\t<No>24</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>1</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'seq':
+                __layout.write('\t\t\t\t\t\t<No>25</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>1</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'timer':
+                __layout.write('\t\t\t\t\t\t<No>25</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'ex_page':
+                __layout.write('\t\t\t\t\t\t<No>30</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>1</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'ch_page':
+                __layout.write('\t\t\t\t\t\t<No>31</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'timecode':
+                __layout.write('\t\t\t\t\t\t<No>35</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            elif self.__obj_type == 'view':
+                __layout.write('\t\t\t\t\t\t<No>39</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>1</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>6</No>\n')
+                __layout.write('\t\t\t\t\t\t<No>' + self.__obj_nr + '</No>\n')
+
+            __layout.write('\t\t\t\t\t</CObject>\n')
+            __layout.write('\t\t\t\t</LayoutCObject>\n\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_objects_close(self):
+        with open(self.__filename, "w+") as __layout:
+            __layout.write('\t\t\t</CObject>\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def layout_close(self):
+        with open(self.__filename, "w+") as __layout:
+            __layout.write('\t\t</LayoutData>\n')
+            __layout.write('\t</Group>\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+    def close_file(self):
+        with open(self.__filename, "a") as __layout:
+            __layout.write('</MA>')
+            __layout.close()
+            return
+
+    #===================================================================================================
+    #TODO: Usage example
+
+
+
+
+
+#=======================================================================================================
+#========================MACROFILE CLASS================================================================
+#=======================================================================================================
+
 """Creates a object that help to write a xml MA2 macrofile """
 
 class MA2macro:
