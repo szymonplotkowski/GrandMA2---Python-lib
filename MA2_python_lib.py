@@ -14,6 +14,79 @@
 #----------------------------------------------------------------------
 
 #=======================================================================================================
+#========================GROUPFILE CLASS===============================================================
+#=======================================================================================================
+
+class MA2group:
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def __init__ (self, filename='default_group_name.xml', showfile='Created with MA2MBL4P'):
+
+        self.__filename = filename
+        self.__showfile = showfile
+
+        with open(self.__filename, "w+") as __group:
+            __group.write('<?xml version="1.0" encoding="utf-8"?>\n')
+            __group.write(
+                '<MA xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.malighting.de/grandma2/xml/MA" xsi:schemaLocation="http://schemas.malighting.de/grandma2/xml/MA http://schemas.malighting.de/grandma2/xml/3.4.0/MA.xsd" major_vers="3" minor_vers="4" stream_vers="0">\n')
+            __group.write('\t<Info datetime="2018-01-20T19:30:29" showfile="' +self.__showfile+ '" />\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def group_start (self, group_index=1, group_name='default_group_name'):
+
+        self.__groupindex= str(group_index)
+        self.__groupname= group_name
+
+        with open (self.__filename, "w+") as __group:
+            __group.write('\t<Group index="' + self.__groupindex + '" name="' + self.__groupname + '">')
+            __group.write('\t\t<Subfixtures>')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def group_obj_line (self, fixid='1' , subfix='0' ):
+
+        self.__fixid = str(fixid)
+        self.__subfix = str(subfix)
+
+        with open (self.__filename, "w+") as __group:
+            __group.write('\t\t\t<Subfixture fix_id="' +self.__fixid+ '" ')
+            if self.__subfix == '0' :
+                __group.write('/>')
+            else:
+                __group.write('sub_index="' + self.__subfix + '" />')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def group_end (self):
+
+        with open (self.__filename, "w+") as __group:
+            __group.write('\t\t</Subfixtures>')
+            __group.write('\t</Group>')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def close_file (self):
+        with open(self.__filename, "a") as __group:
+            __group.write('</MA>')
+            __group.close()
+            return
+
+    #===================================================================================================
+    #TODO: USAGE EXAMPLE
+
+
+#=======================================================================================================
 #========================LAYOUTFILE CLASS===============================================================
 #=======================================================================================================
 
