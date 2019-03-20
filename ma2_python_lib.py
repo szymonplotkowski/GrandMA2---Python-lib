@@ -13,11 +13,63 @@
 #----------------------------------------------------------------------
 #----------------------------------------------------------------------
 
+
+#=======================================================================================================
+#========================CAMERAFILE CLASS===============================================================
+#=======================================================================================================
+
+class MA2Camera:
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def __init__ (self, filename='default_camera_name.xml', showfile='Created with MA2MBL4P'):
+
+        self.__filename = filename
+        self.__showfile = showfile
+
+        with open(self.__filename, "w+") as __camera:
+            __camera.write('<?xml version="1.0" encoding="utf-8"?>\n')
+            __camera.write(
+                '<MA xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.malighting.de/grandma2/xml/MA" xsi:schemaLocation="http://schemas.malighting.de/grandma2/xml/MA http://schemas.malighting.de/grandma2/xml/3.4.0/MA.xsd" major_vers="3" minor_vers="4" stream_vers="0">\n')
+            __camera.write('\t<Info datetime="2018-01-20T19:30:29" showfile="' +self.__showfile+ '" />\n')
+            return
+
+    #===================================================================================================
+    #TODO: Docstrings
+
+    def camera_object (self, camera_index=1, camera_name='default_camera_name', loc_x=0, loc_y=0, loc_z=0, rot_x=0, rot_y=0, rot_z=0):
+
+        self.__cameraindex= str(camera_index)
+        self.__cameraname= camera_name
+        self.__loc_x= str(loc_x)
+        self.__loc_y= str(loc_y)
+        self.__loc_z= str(loc_z)
+        self.__rot_x= str(rot_x)
+        self.__rot_y= str(rot_y)
+        self.__rot_z= str(rot_z)
+
+        with open (self.__filename, "a") as __camera:
+            __camera.write('\t<Camera index="' + self.__cameraindex + '" name="' + self.__cameraname +'" ')
+            __camera.write('location_x="' + self.__loc_x + '" location_y="' + self.__loc_y + '" location_z="' + self.__loc_z +'">\n')
+            __camera.write('\t\t<Rotation rotation_x="'+ self.__rot_x +'" rotation_y="'+ self.__rot_y +'" rotation_z="'+ self.__rot_z +'" />\n')
+            __camera.write('\t</Camera>\n')
+            return
+
+    # ===================================================================================================
+    # TODO: Docstrings
+
+    def close_file (self):
+        with open(self.__filename, "a") as __camera:
+            __camera.write('</MA>')
+            __camera.close()
+            return
+
 #=======================================================================================================
 #========================GROUPFILE CLASS===============================================================
 #=======================================================================================================
 
-class MA2group:
+class MA2Group:
 
     #===================================================================================================
     #TODO: Docstrings
@@ -42,9 +94,9 @@ class MA2group:
         self.__groupindex= str(group_index)
         self.__groupname= group_name
 
-        with open (self.__filename, "w+") as __group:
-            __group.write('\t<Group index="' + self.__groupindex + '" name="' + self.__groupname + '">')
-            __group.write('\t\t<Subfixtures>')
+        with open (self.__filename, "a") as __group:
+            __group.write('\t<Group index="' + self.__groupindex + '" name="' + self.__groupname + '">\n')
+            __group.write('\t\t<Subfixtures>\n')
             return
 
     #===================================================================================================
@@ -55,12 +107,12 @@ class MA2group:
         self.__fixid = str(fixid)
         self.__subfix = str(subfix)
 
-        with open (self.__filename, "w+") as __group:
+        with open (self.__filename, "a") as __group:
             __group.write('\t\t\t<Subfixture fix_id="' +self.__fixid+ '" ')
             if self.__subfix == '0' :
-                __group.write('/>')
+                __group.write('/>\n')
             else:
-                __group.write('sub_index="' + self.__subfix + '" />')
+                __group.write('sub_index="' + self.__subfix + '" />\n')
             return
 
     #===================================================================================================
@@ -68,9 +120,9 @@ class MA2group:
 
     def group_end (self):
 
-        with open (self.__filename, "w+") as __group:
-            __group.write('\t\t</Subfixtures>')
-            __group.write('\t</Group>')
+        with open (self.__filename, "a") as __group:
+            __group.write('\t\t</Subfixtures>\n')
+            __group.write('\t</Group>\n')
             return
 
     #===================================================================================================
@@ -86,13 +138,14 @@ class MA2group:
     #TODO: USAGE EXAMPLE
 
 
+
 #=======================================================================================================
 #========================LAYOUTFILE CLASS===============================================================
 #=======================================================================================================
 
 """Create a object that help to write xml MA2 layout file"""
 
-class MA2layout:
+class MA2Layout:
 
     #===================================================================================================
 
@@ -115,7 +168,7 @@ class MA2layout:
     def layout_start (self, lay_no=1, lay_name='default_layout_name'):
         self.__lay_no = lay_no
         self.__lay_name = lay_name
-        with open(self.__filename ,"w+") as __layout:
+        with open(self.__filename ,"a") as __layout:
               __layout.write ('\t<Group index=";' +__lay_no+ '" name="' +__lay_name+ '">\n')
               return
 
@@ -123,7 +176,7 @@ class MA2layout:
     #TODO: Docstrings
 
     def layout_fix_declaration_start (self):
-        with open(self.__filename, "w+") as __layout:
+        with open(self.__filename, "a") as __layout:
             __layout.write('\t\t<Subfixtures>\n')
             return
 
@@ -135,7 +188,7 @@ class MA2layout:
         self.__fixid = fixid
         self.__instance = instance
 
-        with open(self.__filename, "w+") as __layout:
+        with open(self.__filename, "a") as __layout:
             if self.__instance == 0:
                 __layout.write('\t\t\t<Subfixture fix_id="' + self.__fixid + '"/>\n')
             else:
@@ -145,7 +198,7 @@ class MA2layout:
     #TODO: Docstrings
 
     def layout_fixtures_declaration_close(self):
-        with open(self.__filename, "w+") as __layout:
+        with open(self.__filename, "a") as __layout:
             __layout.write('\t\t</Subfixtures>\n')
             return
 
@@ -164,7 +217,7 @@ class MA2layout:
         self.__gauge = gauge
         self.__vmode = vmode
 
-        with open(self.__filename ,"w+") as __layout:
+        with open(self.__filename ,"a") as __layout:
             __layout.write ('\t\t<LayoutData index="'+self.__lay_nr+'" marker_visible="'+self.__visible+'" background_color="'+self.__bckgrnd+'" visible_grid_h="'+self.__grid_h+'" visible_grid_w="'+self.__grid_w+'" snap_grid_h="'+self.__snap_h+'" snap_grid_w="'+self.__snap_w+'" default_gauge="'+self.__gauge+'" subfixture_view_mode="'+self.__vmode+'">\n')
             return
 
@@ -172,7 +225,7 @@ class MA2layout:
     #TODO: Docstrings
 
     def layout_fixture_obj_start(self):
-        with open(self.__filename, "w+") as __layout:
+        with open(self.__filename, "a") as __layout:
             __layout.write('\t\t\t<SubFixtures>\n')
             return
 
@@ -194,7 +247,7 @@ class MA2layout:
         self.__fn_type = fn_type
         self.__select_gr = select_gr
 
-        with open(self.__filename, "w+") as __layout:
+        with open(self.__filename, "a") as __layout:
             if self.__instance == '0':
                 __layout.write('\t\t\t\t<LayoutSubFix center_x="' + self.__center_x + '" center_y="' + self.__center_y + '" size_h="' + self.__size_h + '" size_w="' + self.__size_w + '" background_color="' + self.__bckgrnd + '" icon="' + self.__icon + '" show_id="' + self.__sh_id + '" show_type="' + self.__sh_type + '" function_type="' + self.__n_type + '" select_group="' + self.__select_gr + '">\n')
                 __layout.write('\t\t\t\t\t<image />\n')
@@ -211,7 +264,7 @@ class MA2layout:
     #TODO: Docstrings
 
     def layout_fixture_obj_close(self):
-        with open(self.__filename, "w+") as __layout:
+        with open(self.__filename, "a") as __layout:
             __layout.write('\t\t\t</SubFixtures>\n')
             return
 
@@ -239,7 +292,7 @@ class MA2layout:
         self.__fn_type = fn_type
         self.__select_gr = select_gr
 
-        with open(self.__filename, "w+") as __layout:
+        with open(self.__filename, "a") as __layout:
             __layout.write('\t\t\t\t<LayoutCObject font_size="' + self.__font + '" center_x="' + self.__center_x + '" center_y="' + self.__center_y + '" size_h="' + self.__size_h + '" size_w="' + self.__size_w + '" background_color="' + self.__bckgrnd + '" border_color="' + self.__border + '" icon="' + self.__icon + '" text="' + self.__txt + '" show_id="' + self.__sh_id + '" show_name="' + self.__sh_name + '" show_type="' + self.__sh_type + '" function_type="' + self.__f_type + '" select_group="' + self.__select_gr + '">\n')
             __layout.write('\t\t\t\t\t<image />\n')
             __layout.write('\t\t\t\t\t<CObject name="' + self.__obj_name + '">\n')
@@ -327,7 +380,7 @@ class MA2layout:
     #TODO: Docstrings
 
     def layout_objects_close(self):
-        with open(self.__filename, "w+") as __layout:
+        with open(self.__filename, "a") as __layout:
             __layout.write('\t\t\t</CObject>\n')
             return
 
@@ -335,7 +388,7 @@ class MA2layout:
     #TODO: Docstrings
 
     def layout_close(self):
-        with open(self.__filename, "w+") as __layout:
+        with open(self.__filename, "a") as __layout:
             __layout.write('\t\t</LayoutData>\n')
             __layout.write('\t</Group>\n')
             return
@@ -354,14 +407,13 @@ class MA2layout:
 
 
 
-
 #=======================================================================================================
 #========================MACROFILE CLASS================================================================
 #=======================================================================================================
 
 """Creates a object that help to write a xml MA2 macrofile """
 
-class MA2macro:
+class MA2Macro:
 
     #===================================================================================================
 
